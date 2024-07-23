@@ -27,4 +27,31 @@ public class ProductController {
         return productService.getProductPriceWithDiscount(id);
     }
 
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable Long id) {
+        return productService.getProduct(id);
+    }
+
+    @GetMapping("/all")
+    public Iterable<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+    }
+
+    @GetMapping("/search")
+    public Iterable<Product> searchProduct(@RequestParam String name) {
+        return productService.searchProduct(name);
+    }
+
+
+
 }

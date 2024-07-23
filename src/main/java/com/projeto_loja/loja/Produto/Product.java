@@ -5,6 +5,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +24,9 @@ public class Product {
     @Getter
     private Long id; // Unique identifier for the product.
 
+
+
+@NotBlank(message = "O nome é obrigatório")
     private String name; // Name of the product.
     private String description; // Description of the product.
     private double price; // Price of the product.
@@ -29,6 +35,7 @@ public class Product {
      * Sets the ID of the product.
      * @param id The new ID of the product.
      */
+    @NotNull(message = "O preço é obrigatório")
     public void setId(Long id) {
         this.id = id;
     }
