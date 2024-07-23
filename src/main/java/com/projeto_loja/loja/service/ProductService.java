@@ -1,32 +1,29 @@
 package com.projeto_loja.loja.service;
 
-import com.projeto_loja.loja.strategy.DiscountStrategy;
 import com.projeto_loja.loja.Produto.Product;
 import com.projeto_loja.loja.Produto.ProductRepository;
+import com.projeto_loja.loja.strategy.DiscountStrategy;
 import com.projeto_loja.loja.strategy.NoDiscountStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import java.util.List;
+
 @Service
 public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
 
-    private DiscountStrategy discountStrategy;
+    private List<DiscountStrategy> discountStrategies;
 
+    // Autowire the list of DiscountStrategy implementations
     @Autowired
-    public void setDiscountStrategy(@Qualifier("percentageDiscountStrategy") DiscountStrategy discountStrategy) {
-        this.discountStrategy = discountStrategy;
+    public ProductService(List<DiscountStrategy> discountStrategies) {
+        this.discountStrategies = discountStrategies;
     }
 
     public Product createProduct(Product product) {
         return productRepository.save(product);
-    }
-
-    public Double getProductPriceWithDiscount(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        return discountStrategy.applyDiscount(product.getPrice());
     }
 
     public Product getProduct(Long productId) {
@@ -38,9 +35,7 @@ public class ProductService {
     }
 
     public Product updateProduct(Long productId, Product product) {
-        Product productToUpdate = productRepository
-                .findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+        Product productToUpdate = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
         productToUpdate.setName(product.getName());
         productToUpdate.setPrice(product.getPrice());
         return productRepository.save(productToUpdate);
@@ -48,16 +43,25 @@ public class ProductService {
 
     public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
-
     }
 
     public Iterable<Product> searchProduct(String name) {
         return productRepository.findByNameContaining(name);
     }
 
-    public void setNoDiscountStrategy() {
-        this.discountStrategy = (DiscountStrategy) new NoDiscountStrategy();
+    // Method to apply discount using a selected strategy
+    public double applyDiscount(Long productId, String discountType) {
+        Product product = getProduct(productId);
+        DiscountStrategy selectedStrategy = discountStrategies.stream()
+                .filter(strategy -> strategy.getClass().getSimpleName().equalsIgnoreCase(discountType))
+                .findFirst()
+                .orElse((DiscountStrategy) new NoDiscountStrategy()); // Default to NoDiscountStrategy if none match
+        return selectedStrategy.applyDiscount(product.getPrice());
     }
 
-
+    public Double getProductPriceWithDiscount(Long id) {
+        return productRepository.findById(id)
+                .map(Product::getPrice)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
 }
