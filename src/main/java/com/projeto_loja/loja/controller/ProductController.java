@@ -12,20 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
-
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
-    @GetMapping("/{productId}")
-    public Double getProductPriceWithDiscount(@PathVariable Long productId) {
-        return productService.getProductPriceWithDiscount(productId);
+    @GetMapping("/{id}/price")
+    public Double getProductPriceWithDiscount(@PathVariable Long id) {
+        return productService.getProductPriceWithDiscount(id);
     }
 
 }

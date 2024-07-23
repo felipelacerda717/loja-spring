@@ -8,13 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
-    private  ProductRepository productRepository;
-    private  DiscountStrategy discountStrategy;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    private DiscountStrategy discountStrategy;
 
     @Autowired
     public void setDiscountStrategy(DiscountStrategy discountStrategy) {
         this.discountStrategy = discountStrategy;
     }
+
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }

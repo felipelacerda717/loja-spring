@@ -3,6 +3,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -10,6 +14,7 @@ import lombok.Getter;
  * This class is annotated as an Entity, making it suitable for ORM (Object-Relational Mapping) frameworks to map it to a database table.
  */
 @Entity
+@Data
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
